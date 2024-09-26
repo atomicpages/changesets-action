@@ -12,17 +12,16 @@ for you.
 
 ### Inputs
 
-- publish - The command to use to build and publish packages
-- version - The command to update version, edit CHANGELOG, read and delete
-  changesets. Default to `changeset version` if not provided
-- commit - The commit message to use. Default to `Version Packages`
-- title - The pull request title. Default to `Version Packages`
-- setupGitUser - Sets up the git user for commits as `"github-actions[bot]"`.
-  Default to `true`
-- createGithubReleases - A boolean value to indicate whether to create Github
-  releases after `publish` or not. Default to `true`
-- cwd - Changes node's `process.cwd()` if the project is not located on the
-  root. Default to `process.cwd()`
+| Option Name            | Description                                                                          | Default             |
+| ---------------------- | ------------------------------------------------------------------------------------ | ------------------- |
+| `publish`              | The command to use to build and publish packages                                     |                     |
+| `registry`             | The registry to publish to. Options are `npm`, `github`, or `custom`.                | `npm`               |
+| `version`              | The command to update version, edit CHANGELOG, read and delete changesets.           | `changeset version` |
+| `commit`               | The commit message to use.                                                           | `Version Packages`  |
+| `title`                | The pull request title.                                                              | `Version Packages`  |
+| `setupGitUser`         | Sets up the git user for commits as `"github-actions[bot]"`.                         | `true`              |
+| `createGithubReleases` | A boolean value to indicate whether to create Github releases after `publish` or not | `true`              |
+| `cwd`                  | Changes node's `process.cwd()` if the project is not located on the root             | `process.cwd()`     |
 
 ### Outputs
 

@@ -49,20 +49,25 @@ export function getChangelogEntry(changelog: string, version: string) {
 
   for (let i = 0; i < nodes.length; i++) {
     let node = nodes[i];
+
     if (node.type === "heading") {
       let stringified: string = mdastToString(node);
       let match = stringified.toLowerCase().match(/(major|minor|patch)/);
+
       if (match !== null) {
         let level = BumpLevels[match[0] as "major" | "minor" | "patch"];
         highestLevel = Math.max(level, highestLevel);
       }
+
       if (headingStartInfo === undefined && stringified === version) {
         headingStartInfo = {
           index: i,
           depth: node.depth,
         };
+
         continue;
       }
+
       if (
         endIndex === undefined &&
         headingStartInfo !== undefined &&
@@ -73,12 +78,14 @@ export function getChangelogEntry(changelog: string, version: string) {
       }
     }
   }
+
   if (headingStartInfo) {
     ast.children = (ast.children as any).slice(
       headingStartInfo.index + 1,
       endIndex,
     );
   }
+
   return {
     content: unified().use(remarkStringify).stringify(ast),
     highestLevel: highestLevel,
@@ -92,8 +99,10 @@ export function sortTheThings(
   if (a.private === b.private) {
     return b.highestLevel - a.highestLevel;
   }
+
   if (a.private) {
     return 1;
   }
+
   return -1;
 }

@@ -30,7 +30,7 @@ const setupOctokit = (githubToken: string) => {
       throttle: {
         onRateLimit: (retryAfter, options: any, octokit, retryCount) => {
           core.warning(
-            `Request quota exhausted for request ${options.method} ${options.url}`
+            `Request quota exhausted for request ${options.method} ${options.url}`,
           );
 
           if (retryCount <= 2) {
@@ -42,10 +42,10 @@ const setupOctokit = (githubToken: string) => {
           retryAfter,
           options: any,
           octokit,
-          retryCount
+          retryCount,
         ) => {
           core.warning(
-            `SecondaryRateLimit detected for request ${options.method} ${options.url}`
+            `SecondaryRateLimit detected for request ${options.method} ${options.url}`,
           );
 
           if (retryCount <= 2) {
@@ -54,13 +54,13 @@ const setupOctokit = (githubToken: string) => {
           }
         },
       },
-    })
+    }),
   );
 };
 
 const createRelease = async (
   octokit: ReturnType<typeof setupOctokit>,
-  { pkg, tagName }: { pkg: Package; tagName: string }
+  { pkg, tagName }: { pkg: Package; tagName: string },
 ) => {
   try {
     let changelogFileName = path.join(pkg.dir, "CHANGELOG.md");
@@ -72,7 +72,7 @@ const createRelease = async (
       // we can find a changelog but not the entry for this version
       // if this is true, something has probably gone wrong
       throw new Error(
-        `Could not find changelog entry for ${pkg.packageJson.name}@${pkg.packageJson.version}`
+        `Could not find changelog entry for ${pkg.packageJson.name}@${pkg.packageJson.version}`,
       );
     }
 
@@ -127,7 +127,7 @@ export async function runPublish({
   let changesetPublishOutput = await getExecOutput(
     publishCommand,
     publishArgs,
-    { cwd }
+    { cwd },
   );
 
   await gitUtils.pushTags();
@@ -149,7 +149,7 @@ export async function runPublish({
       if (pkg === undefined) {
         throw new Error(
           `Package "${pkgName}" not found.` +
-            "This is probably a bug in the action, please open an issue"
+            "This is probably a bug in the action, please open an issue",
         );
       }
       releasedPackages.push(pkg);
@@ -161,15 +161,15 @@ export async function runPublish({
           createRelease(octokit, {
             pkg,
             tagName: `${pkg.packageJson.name}@${pkg.packageJson.version}`,
-          })
-        )
+          }),
+        ),
       );
     }
   } else {
     if (packages.length === 0) {
       throw new Error(
         `No package found.` +
-          "This is probably a bug in the action, please open an issue"
+          "This is probably a bug in the action, please open an issue",
       );
     }
     let pkg = packages[0];
@@ -215,7 +215,7 @@ const requireChangesetsCliPkgJson = (cwd: string) => {
       err.code === "MODULE_NOT_FOUND"
     ) {
       throw new Error(
-        `Have you forgotten to install \`@changesets/cli\` in "${cwd}"?`
+        `Have you forgotten to install \`@changesets/cli\` in "${cwd}"?`,
       );
     }
     throw err;
@@ -334,9 +334,11 @@ export async function runVersion({
     await exec(versionCommand, versionArgs, { cwd });
   } else {
     let changesetsCliPkgJson = requireChangesetsCliPkgJson(cwd);
+
     let cmd = semver.lt(changesetsCliPkgJson.version, "2.0.0")
       ? "bump"
       : "version";
+
     await exec("node", [resolveFrom(cwd, "@changesets/cli/bin.js"), cmd], {
       cwd,
     });
@@ -348,22 +350,25 @@ export async function runVersion({
     head: `${github.context.repo.owner}:${versionBranch}`,
     base: branch,
   });
+
   let changedPackages = await getChangedPackages(cwd, versionsByDirectory);
+
   let changedPackagesInfoPromises = Promise.all(
     changedPackages.map(async (pkg) => {
       let changelogContents = await fs.readFile(
         path.join(pkg.dir, "CHANGELOG.md"),
-        "utf8"
+        "utf8",
       );
 
       let entry = getChangelogEntry(changelogContents, pkg.packageJson.version);
+
       return {
         highestLevel: entry.highestLevel,
         private: !!pkg.packageJson.private,
         content: entry.content,
         header: `## ${pkg.packageJson.name}@${pkg.packageJson.version}`,
       };
-    })
+    }),
   );
 
   const finalPrTitle = `${prTitle}${!!preState ? ` (${preState.tag})` : ""}`;
@@ -373,6 +378,7 @@ export async function runVersion({
     const finalCommitMessage = `${commitMessage}${
       !!preState ? ` (${preState.tag})` : ""
     }`;
+
     await gitUtils.commitAll(finalCommitMessage);
   }
 
@@ -395,6 +401,7 @@ export async function runVersion({
 
   if (existingPullRequests.data.length === 0) {
     core.info("creating pull request");
+
     const { data: newPullRequest } = await octokit.rest.pulls.create({
       base: branch,
       head: versionBranch,
@@ -408,8 +415,8 @@ export async function runVersion({
     };
   } else {
     const [pullRequest] = existingPullRequests.data;
-
     core.info(`updating found pull request #${pullRequest.number}`);
+
     await octokit.rest.pulls.update({
       pull_number: pullRequest.number,
       title: finalPrTitle,
