@@ -961,21 +961,21 @@
                 res.statusCode,
               );
               socket.destroy();
-              var error = new Error(
+              var error2 = new Error(
                 "tunneling socket could not be established, statusCode=" +
                   res.statusCode,
               );
-              error.code = "ECONNRESET";
-              options.request.emit("error", error);
+              error2.code = "ECONNRESET";
+              options.request.emit("error", error2);
               self2.removeSocket(placeholder);
               return;
             }
             if (head.length > 0) {
               debug("got illegal response body from proxy");
               socket.destroy();
-              var error = new Error("got illegal response body from proxy");
-              error.code = "ECONNRESET";
-              options.request.emit("error", error);
+              var error2 = new Error("got illegal response body from proxy");
+              error2.code = "ECONNRESET";
+              options.request.emit("error", error2);
               self2.removeSocket(placeholder);
               return;
             }
@@ -991,12 +991,12 @@
               cause.message,
               cause.stack,
             );
-            var error = new Error(
+            var error2 = new Error(
               "tunneling socket could not be established, cause=" +
                 cause.message,
             );
-            error.code = "ECONNRESET";
-            options.request.emit("error", error);
+            error2.code = "ECONNRESET";
+            options.request.emit("error", error2);
             self2.removeSocket(placeholder);
           }
           __name(onError, "onError");
@@ -6714,7 +6714,7 @@ Content-Type: ${value.type || "application/octet-stream"}\r
         }
         const promise = createDeferredPromise();
         const errorSteps = /* @__PURE__ */ __name(
-          (error) => promise.reject(error),
+          (error2) => promise.reject(error2),
           "errorSteps",
         );
         const successSteps = /* @__PURE__ */ __name((data) => {
@@ -7063,16 +7063,16 @@ Content-Type: ${value.type || "application/octet-stream"}\r
             this.onError(err);
           }
         }
-        onError(error) {
+        onError(error2) {
           this.onFinally();
           if (channels.error.hasSubscribers) {
-            channels.error.publish({ request: this, error });
+            channels.error.publish({ request: this, error: error2 });
           }
           if (this.aborted) {
             return;
           }
           this.aborted = true;
-          return this[kHandler].onError(error);
+          return this[kHandler].onError(error2);
         }
         onFinally() {
           if (this.errorHandler) {
@@ -8107,8 +8107,8 @@ Content-Type: ${value.type || "application/octet-stream"}\r
         onUpgrade(statusCode, headers, socket) {
           this.handler.onUpgrade(statusCode, headers, socket);
         }
-        onError(error) {
-          this.handler.onError(error);
+        onError(error2) {
+          this.handler.onError(error2);
         }
         onHeaders(statusCode, headers, resume, statusText) {
           this.location =
@@ -12947,16 +12947,16 @@ ${len.toString(16)}\r
           };
         }
         const {
-          data: { statusCode, data, headers, trailers, error },
+          data: { statusCode, data, headers, trailers, error: error2 },
           delay,
           persist,
         } = mockDispatch2;
         const { timesInvoked, times } = mockDispatch2;
         mockDispatch2.consumed = !persist && timesInvoked >= times;
         mockDispatch2.pending = timesInvoked < times;
-        if (error !== null) {
+        if (error2 !== null) {
           deleteMockDispatch(this[kDispatches], key);
-          handler.onError(error);
+          handler.onError(error2);
           return true;
         }
         if (typeof delay === "number" && delay > 0) {
@@ -13006,23 +13006,23 @@ ${len.toString(16)}\r
           if (agent.isMockActive) {
             try {
               mockDispatch.call(this, opts, handler);
-            } catch (error) {
-              if (error instanceof MockNotMatchedError) {
+            } catch (error2) {
+              if (error2 instanceof MockNotMatchedError) {
                 const netConnect = agent[kGetNetConnect]();
                 if (netConnect === false) {
                   throw new MockNotMatchedError(
-                    `${error.message}: subsequent request to origin ${origin} was not allowed (net.connect disabled)`,
+                    `${error2.message}: subsequent request to origin ${origin} was not allowed (net.connect disabled)`,
                   );
                 }
                 if (checkNetConnect(netConnect, origin)) {
                   originalDispatch.call(this, opts, handler);
                 } else {
                   throw new MockNotMatchedError(
-                    `${error.message}: subsequent request to origin ${origin} was not allowed (net.connect is not enabled for this origin)`,
+                    `${error2.message}: subsequent request to origin ${origin} was not allowed (net.connect is not enabled for this origin)`,
                   );
                 }
               } else {
-                throw error;
+                throw error2;
               }
             }
           } else {
@@ -13247,14 +13247,14 @@ ${len.toString(16)}\r
         /**
          * Mock an undici request with a defined error.
          */
-        replyWithError(error) {
-          if (typeof error === "undefined") {
+        replyWithError(error2) {
+          if (typeof error2 === "undefined") {
             throw new InvalidArgumentError("error must be defined");
           }
           const newMockDispatch = addMockDispatch(
             this[kDispatches],
             this[kDispatchKey],
-            { error },
+            { error: error2 },
           );
           return new MockScope(newMockDispatch);
         }
@@ -15867,20 +15867,20 @@ ${pendingInterceptorsFormatter.format(pending)}
           this.emit("terminated", reason);
         }
         // https://fetch.spec.whatwg.org/#fetch-controller-abort
-        abort(error) {
+        abort(error2) {
           if (this.state !== "ongoing") {
             return;
           }
           this.state = "aborted";
-          if (!error) {
-            error = new DOMException2(
+          if (!error2) {
+            error2 = new DOMException2(
               "The operation was aborted.",
               "AbortError",
             );
           }
-          this.serializedAbortReason = error;
-          this.connection?.destroy(error);
-          this.emit("terminated", error);
+          this.serializedAbortReason = error2;
+          this.connection?.destroy(error2);
+          this.emit("terminated", error2);
         }
       };
       function fetch(input, init = {}) {
@@ -16008,13 +16008,16 @@ ${pendingInterceptorsFormatter.format(pending)}
         }
       }
       __name(markResourceTiming, "markResourceTiming");
-      function abortFetch(p, request, responseObject, error) {
-        if (!error) {
-          error = new DOMException2("The operation was aborted.", "AbortError");
+      function abortFetch(p, request, responseObject, error2) {
+        if (!error2) {
+          error2 = new DOMException2(
+            "The operation was aborted.",
+            "AbortError",
+          );
         }
-        p.reject(error);
+        p.reject(error2);
         if (request.body != null && isReadable(request.body?.stream)) {
-          request.body.stream.cancel(error).catch((err) => {
+          request.body.stream.cancel(error2).catch((err) => {
             if (err.code === "ERR_INVALID_STATE") {
               return;
             }
@@ -16026,7 +16029,7 @@ ${pendingInterceptorsFormatter.format(pending)}
         }
         const response = responseObject[kState];
         if (response.body != null && isReadable(response.body?.stream)) {
-          response.body.stream.cancel(error).catch((err) => {
+          response.body.stream.cancel(error2).catch((err) => {
             if (err.code === "ERR_INVALID_STATE") {
               return;
             }
@@ -16993,13 +16996,13 @@ ${pendingInterceptorsFormatter.format(pending)}
                   fetchParams.controller.ended = true;
                   this.body.push(null);
                 },
-                onError(error) {
+                onError(error2) {
                   if (this.abort) {
                     fetchParams.controller.off("terminated", this.abort);
                   }
-                  this.body?.destroy(error);
-                  fetchParams.controller.terminate(error);
-                  reject(error);
+                  this.body?.destroy(error2);
+                  fetchParams.controller.terminate(error2);
+                  reject(error2);
                 },
                 onUpgrade(status, headersList, socket) {
                   if (status !== 101) {
@@ -17492,8 +17495,8 @@ ${pendingInterceptorsFormatter.format(pending)}
                     }
                     fr[kResult] = result;
                     fireAProgressEvent("load", fr);
-                  } catch (error) {
-                    fr[kError] = error;
+                  } catch (error2) {
+                    fr[kError] = error2;
                     fireAProgressEvent("error", fr);
                   }
                   if (fr[kState] !== "loading") {
@@ -17502,13 +17505,13 @@ ${pendingInterceptorsFormatter.format(pending)}
                 });
                 break;
               }
-            } catch (error) {
+            } catch (error2) {
               if (fr[kAborted]) {
                 return;
               }
               queueMicrotask(() => {
                 fr[kState] = "done";
-                fr[kError] = error;
+                fr[kError] = error2;
                 fireAProgressEvent("error", fr);
                 if (fr[kState] !== "loading") {
                   fireAProgressEvent("loadend", fr);
@@ -19821,11 +19824,11 @@ ${pendingInterceptorsFormatter.format(pending)}
         }
       }
       __name(onSocketClose, "onSocketClose");
-      function onSocketError(error) {
+      function onSocketError(error2) {
         const { ws } = this;
         ws[kReadyState] = states.CLOSING;
         if (channels.socketError.hasSubscribers) {
-          channels.socketError.publish(error);
+          channels.socketError.publish(error2);
         }
         this.destroy();
       }
@@ -21232,7 +21235,7 @@ ${pendingInterceptorsFormatter.format(pending)}
               throw new Error("Client has already been disposed.");
             }
             const parsedUrl = new URL(requestUrl);
-            let info2 = this._prepareRequest(verb, parsedUrl, headers);
+            let info3 = this._prepareRequest(verb, parsedUrl, headers);
             const maxTries =
               this._allowRetries && RetryableHttpVerbs.includes(verb)
                 ? this._maxRetries + 1
@@ -21240,7 +21243,7 @@ ${pendingInterceptorsFormatter.format(pending)}
             let numTries = 0;
             let response;
             do {
-              response = yield this.requestRaw(info2, data);
+              response = yield this.requestRaw(info3, data);
               if (
                 response &&
                 response.message &&
@@ -21256,7 +21259,7 @@ ${pendingInterceptorsFormatter.format(pending)}
                 if (authenticationHandler) {
                   return authenticationHandler.handleAuthentication(
                     this,
-                    info2,
+                    info3,
                     data,
                   );
                 } else {
@@ -21292,8 +21295,8 @@ ${pendingInterceptorsFormatter.format(pending)}
                     }
                   }
                 }
-                info2 = this._prepareRequest(verb, parsedRedirectUrl, headers);
-                response = yield this.requestRaw(info2, data);
+                info3 = this._prepareRequest(verb, parsedRedirectUrl, headers);
+                response = yield this.requestRaw(info3, data);
                 redirectsRemaining--;
               }
               if (
@@ -21325,7 +21328,7 @@ ${pendingInterceptorsFormatter.format(pending)}
          * @param info
          * @param data
          */
-        requestRaw(info2, data) {
+        requestRaw(info3, data) {
           return __awaiter(this, void 0, void 0, function* () {
             return new Promise((resolve, reject) => {
               function callbackForResult(err, res) {
@@ -21338,7 +21341,7 @@ ${pendingInterceptorsFormatter.format(pending)}
                 }
               }
               __name(callbackForResult, "callbackForResult");
-              this.requestRawWithCallback(info2, data, callbackForResult);
+              this.requestRawWithCallback(info3, data, callbackForResult);
             });
           });
         }
@@ -21348,12 +21351,12 @@ ${pendingInterceptorsFormatter.format(pending)}
          * @param data
          * @param onResult
          */
-        requestRawWithCallback(info2, data, onResult) {
+        requestRawWithCallback(info3, data, onResult) {
           if (typeof data === "string") {
-            if (!info2.options.headers) {
-              info2.options.headers = {};
+            if (!info3.options.headers) {
+              info3.options.headers = {};
             }
-            info2.options.headers["Content-Length"] = Buffer.byteLength(
+            info3.options.headers["Content-Length"] = Buffer.byteLength(
               data,
               "utf8",
             );
@@ -21366,7 +21369,7 @@ ${pendingInterceptorsFormatter.format(pending)}
             }
           }
           __name(handleResult, "handleResult");
-          const req = info2.httpModule.request(info2.options, (msg) => {
+          const req = info3.httpModule.request(info3.options, (msg) => {
             const res = new HttpClientResponse(msg);
             handleResult(void 0, res);
           });
@@ -21378,7 +21381,7 @@ ${pendingInterceptorsFormatter.format(pending)}
             if (socket) {
               socket.end();
             }
-            handleResult(new Error(`Request timeout: ${info2.options.path}`));
+            handleResult(new Error(`Request timeout: ${info3.options.path}`));
           });
           req.on("error", function (err) {
             handleResult(err);
@@ -21414,30 +21417,30 @@ ${pendingInterceptorsFormatter.format(pending)}
           return this._getProxyAgentDispatcher(parsedUrl, proxyUrl);
         }
         _prepareRequest(method, requestUrl, headers) {
-          const info2 = {};
-          info2.parsedUrl = requestUrl;
-          const usingSsl = info2.parsedUrl.protocol === "https:";
-          info2.httpModule = usingSsl ? https : http;
+          const info3 = {};
+          info3.parsedUrl = requestUrl;
+          const usingSsl = info3.parsedUrl.protocol === "https:";
+          info3.httpModule = usingSsl ? https : http;
           const defaultPort = usingSsl ? 443 : 80;
-          info2.options = {};
-          info2.options.host = info2.parsedUrl.hostname;
-          info2.options.port = info2.parsedUrl.port
-            ? parseInt(info2.parsedUrl.port)
+          info3.options = {};
+          info3.options.host = info3.parsedUrl.hostname;
+          info3.options.port = info3.parsedUrl.port
+            ? parseInt(info3.parsedUrl.port)
             : defaultPort;
-          info2.options.path =
-            (info2.parsedUrl.pathname || "") + (info2.parsedUrl.search || "");
-          info2.options.method = method;
-          info2.options.headers = this._mergeHeaders(headers);
+          info3.options.path =
+            (info3.parsedUrl.pathname || "") + (info3.parsedUrl.search || "");
+          info3.options.method = method;
+          info3.options.headers = this._mergeHeaders(headers);
           if (this.userAgent != null) {
-            info2.options.headers["user-agent"] = this.userAgent;
+            info3.options.headers["user-agent"] = this.userAgent;
           }
-          info2.options.agent = this._getAgent(info2.parsedUrl);
+          info3.options.agent = this._getAgent(info3.parsedUrl);
           if (this.handlers) {
             for (const handler of this.handlers) {
-              handler.prepareRequest(info2.options);
+              handler.prepareRequest(info3.options);
             }
           }
-          return info2;
+          return info3;
         }
         _mergeHeaders(headers) {
           if (this.requestOptions && this.requestOptions.headers) {
@@ -21843,12 +21846,12 @@ ${pendingInterceptorsFormatter.format(pending)}
             const httpclient = _OidcClient.createHttpClient();
             const res = yield httpclient
               .getJson(id_token_url)
-              .catch((error) => {
+              .catch((error2) => {
                 throw new Error(`Failed to get ID Token. 
  
-        Error Code : ${error.statusCode}
+        Error Code : ${error2.statusCode}
  
-        Error Message: ${error.message}`);
+        Error Message: ${error2.message}`);
               });
             const id_token =
               (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
@@ -21870,8 +21873,8 @@ ${pendingInterceptorsFormatter.format(pending)}
               const id_token = yield _OidcClient.getCall(id_token_url);
               core_1.setSecret(id_token);
               return id_token;
-            } catch (error) {
-              throw new Error(`Error message: ${error.message}`);
+            } catch (error2) {
+              throw new Error(`Error message: ${error2.message}`);
             }
           });
         }
@@ -22449,7 +22452,7 @@ ${pendingInterceptorsFormatter.format(pending)}
       }
       __name(addPath, "addPath");
       exports.addPath = addPath;
-      function getInput(name, options) {
+      function getInput2(name, options) {
         const val =
           process.env[`INPUT_${name.replace(/ /g, "_").toUpperCase()}`] || "";
         if (options && options.required && !val) {
@@ -22460,10 +22463,10 @@ ${pendingInterceptorsFormatter.format(pending)}
         }
         return val.trim();
       }
-      __name(getInput, "getInput");
-      exports.getInput = getInput;
+      __name(getInput2, "getInput");
+      exports.getInput = getInput2;
       function getMultilineInput(name, options) {
-        const inputs = getInput(name, options)
+        const inputs = getInput2(name, options)
           .split("\n")
           .filter((x) => x !== "");
         if (options && options.trimWhitespace === false) {
@@ -22473,18 +22476,18 @@ ${pendingInterceptorsFormatter.format(pending)}
       }
       __name(getMultilineInput, "getMultilineInput");
       exports.getMultilineInput = getMultilineInput;
-      function getBooleanInput(name, options) {
+      function getBooleanInput2(name, options) {
         const trueValue = ["true", "True", "TRUE"];
         const falseValue = ["false", "False", "FALSE"];
-        const val = getInput(name, options);
+        const val = getInput2(name, options);
         if (trueValue.includes(val)) return true;
         if (falseValue.includes(val)) return false;
         throw new TypeError(`Input does not meet YAML 1.2 "Core Schema" specification: ${name}
 Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       }
-      __name(getBooleanInput, "getBooleanInput");
-      exports.getBooleanInput = getBooleanInput;
-      function setOutput(name, value) {
+      __name(getBooleanInput2, "getBooleanInput");
+      exports.getBooleanInput = getBooleanInput2;
+      function setOutput2(name, value) {
         const filePath = process.env["GITHUB_OUTPUT"] || "";
         if (filePath) {
           return file_command_1.issueFileCommand(
@@ -22499,19 +22502,19 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           utils_1.toCommandValue(value),
         );
       }
-      __name(setOutput, "setOutput");
-      exports.setOutput = setOutput;
+      __name(setOutput2, "setOutput");
+      exports.setOutput = setOutput2;
       function setCommandEcho(enabled) {
         command_1.issue("echo", enabled ? "on" : "off");
       }
       __name(setCommandEcho, "setCommandEcho");
       exports.setCommandEcho = setCommandEcho;
-      function setFailed(message) {
+      function setFailed2(message) {
         process.exitCode = ExitCode.Failure;
-        error(message);
+        error2(message);
       }
-      __name(setFailed, "setFailed");
-      exports.setFailed = setFailed;
+      __name(setFailed2, "setFailed");
+      exports.setFailed = setFailed2;
       function isDebug() {
         return process.env["RUNNER_DEBUG"] === "1";
       }
@@ -22522,15 +22525,15 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       }
       __name(debug, "debug");
       exports.debug = debug;
-      function error(message, properties = {}) {
+      function error2(message, properties = {}) {
         command_1.issueCommand(
           "error",
           utils_1.toCommandProperties(properties),
           message instanceof Error ? message.toString() : message,
         );
       }
-      __name(error, "error");
-      exports.error = error;
+      __name(error2, "error");
+      exports.error = error2;
       function warning2(message, properties = {}) {
         command_1.issueCommand(
           "warning",
@@ -22549,11 +22552,11 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       }
       __name(notice, "notice");
       exports.notice = notice;
-      function info2(message) {
+      function info3(message) {
         process.stdout.write(message + os.EOL);
       }
-      __name(info2, "info");
-      exports.info = info2;
+      __name(info3, "info");
+      exports.info = info3;
       function startGroup(name) {
         command_1.issue("group", name);
       }
@@ -23753,9 +23756,11 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
             pth.replace(path4.parse(pth).root, ""),
           );
           if (pathHasInvalidWinCharacters) {
-            const error = new Error(`Path contains invalid characters: ${pth}`);
-            error.code = "EINVAL";
-            throw error;
+            const error2 = new Error(
+              `Path contains invalid characters: ${pth}`,
+            );
+            error2.code = "EINVAL";
+            throw error2;
           }
         }
       }, "checkPath");
@@ -26224,7 +26229,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
                   );
                   state.CheckComplete();
                 });
-                state.on("done", (error, exitCode) => {
+                state.on("done", (error2, exitCode) => {
                   if (stdbuffer.length > 0) {
                     this.emit("stdline", stdbuffer);
                   }
@@ -26232,8 +26237,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
                     this.emit("errline", errbuffer);
                   }
                   cp.removeAllListeners();
-                  if (error) {
-                    reject(error);
+                  if (error2) {
+                    reject(error2);
                   } else {
                     resolve(exitCode);
                   }
@@ -26338,21 +26343,21 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           this.emit("debug", message);
         }
         _setResult() {
-          let error;
+          let error2;
           if (this.processExited) {
             if (this.processError) {
-              error = new Error(
+              error2 = new Error(
                 `There was an error when attempting to execute the process '${this.toolPath}'. This may indicate the process failed to start. Error: ${this.processError}`,
               );
             } else if (
               this.processExitCode !== 0 &&
               !this.options.ignoreReturnCode
             ) {
-              error = new Error(
+              error2 = new Error(
                 `The process '${this.toolPath}' failed with exit code ${this.processExitCode}`,
               );
             } else if (this.processStderr && this.options.failOnStdErr) {
-              error = new Error(
+              error2 = new Error(
                 `The process '${this.toolPath}' failed because one or more lines were written to the STDERR stream`,
               );
             }
@@ -26362,7 +26367,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
             this.timeout = null;
           }
           this.done = true;
-          this.emit("done", error, this.processExitCode);
+          this.emit("done", error2, this.processExitCode);
         }
         static HandleTimeout(state) {
           if (state.done) {
@@ -26874,8 +26879,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           hook = /* @__PURE__ */ __name(function (method, options) {
             return Promise.resolve()
               .then(method.bind(null, options))
-              .catch(function (error) {
-                return orig(error, options);
+              .catch(function (error2) {
+                return orig(error2, options);
               });
           }, "hook");
         }
@@ -27791,7 +27796,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
             }
             if (status >= 400) {
               const data = await getResponseData(response);
-              const error = new import_request_error.RequestError(
+              const error2 = new import_request_error.RequestError(
                 toErrorMessage(data),
                 status,
                 {
@@ -27804,7 +27809,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
                   request: requestOptions,
                 },
               );
-              throw error;
+              throw error2;
             }
             return parseSuccessResponseBody
               ? await getResponseData(response)
@@ -27818,15 +27823,16 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
               data,
             };
           })
-          .catch((error) => {
-            if (error instanceof import_request_error.RequestError) throw error;
-            else if (error.name === "AbortError") throw error;
-            let message = error.message;
-            if (error.name === "TypeError" && "cause" in error) {
-              if (error.cause instanceof Error) {
-                message = error.cause.message;
-              } else if (typeof error.cause === "string") {
-                message = error.cause;
+          .catch((error2) => {
+            if (error2 instanceof import_request_error.RequestError)
+              throw error2;
+            else if (error2.name === "AbortError") throw error2;
+            let message = error2.message;
+            if (error2.name === "TypeError" && "cause" in error2) {
+              if (error2.cause instanceof Error) {
+                message = error2.cause.message;
+              } else if (typeof error2.cause === "string") {
+                message = error2.cause;
               }
             }
             throw new import_request_error.RequestError(message, 500, {
@@ -30860,8 +30866,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
                   /<([^>]+)>;\s*rel="next"/,
                 ) || [])[1];
                 return { value: normalizedResponse };
-              } catch (error) {
-                if (error.status !== 409) throw error;
+              } catch (error2) {
+                if (error2.status !== 409) throw error2;
                 url = "";
                 return {
                   value: {
@@ -31381,8 +31387,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       "use strict";
       Object.defineProperty(exports, "__esModule", { value: true });
       exports.isEnoentCodeError = void 0;
-      function isEnoentCodeError(error) {
-        return error.code === "ENOENT";
+      function isEnoentCodeError(error2) {
+        return error2.code === "ENOENT";
       }
       __name(isEnoentCodeError, "isEnoentCodeError");
       exports.isEnoentCodeError = isEnoentCodeError;
@@ -35223,7 +35229,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       function merge(streams) {
         const mergedStream = merge2(streams);
         streams.forEach((stream) => {
-          stream.once("error", (error) => mergedStream.emit("error", error));
+          stream.once("error", (error2) => mergedStream.emit("error", error2));
         });
         mergedStream.once("close", () => propagateCloseEventToSources(streams));
         mergedStream.once("end", () => propagateCloseEventToSources(streams));
@@ -35486,8 +35492,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       }
       __name(read, "read");
       exports.read = read;
-      function callFailureCallback(callback, error) {
-        callback(error);
+      function callFailureCallback(callback, error2) {
+        callback(error2);
       }
       __name(callFailureCallback, "callFailureCallback");
       function callSuccessCallback(callback, result) {
@@ -35516,11 +35522,11 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
             stat.isSymbolicLink = () => true;
           }
           return stat;
-        } catch (error) {
+        } catch (error2) {
           if (!settings.throwErrorOnBrokenSymbolicLink) {
             return lstat2;
           }
-          throw error;
+          throw error2;
         }
       }
       __name(read, "read");
@@ -35892,9 +35898,9 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
               settings.pathSegmentSeparator,
             );
             return (done) => {
-              fsStat.stat(path4, settings.fsStatSettings, (error, stats) => {
-                if (error !== null) {
-                  done(error);
+              fsStat.stat(path4, settings.fsStatSettings, (error2, stats) => {
+                if (error2 !== null) {
+                  done(error2);
                   return;
                 }
                 const entry = {
@@ -35920,8 +35926,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       }
       __name(readdir, "readdir");
       exports.readdir = readdir;
-      function callFailureCallback(callback, error) {
-        callback(error);
+      function callFailureCallback(callback, error2) {
+        callback(error2);
       }
       __name(callFailureCallback, "callFailureCallback");
       function callSuccessCallback(callback, result) {
@@ -35969,9 +35975,9 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
             try {
               const stats = settings.fs.statSync(entry.path);
               entry.dirent = utils.fs.createDirentFromStats(entry.name, stats);
-            } catch (error) {
+            } catch (error2) {
               if (settings.throwErrorOnBrokenSymbolicLink) {
-                throw error;
+                throw error2;
               }
             }
           }
@@ -36209,7 +36215,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           empty: noop2,
           kill,
           killAndDrain,
-          error,
+          error: error2,
         };
         return self2;
         function running() {
@@ -36339,10 +36345,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           self2.drain = noop2;
         }
         __name(killAndDrain, "killAndDrain");
-        function error(handler) {
+        function error2(handler) {
           errorHandler = handler;
         }
-        __name(error, "error");
+        __name(error2, "error");
       }
       __name(fastqueue, "fastqueue");
       function noop2() {}
@@ -36451,11 +36457,11 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
         exports.isAppliedFilter =
         exports.isFatalError =
           void 0;
-      function isFatalError(settings, error) {
+      function isFatalError(settings, error2) {
         if (settings.errorFilter === null) {
           return true;
         }
-        return !settings.errorFilter(error);
+        return !settings.errorFilter(error2);
       }
       __name(isFatalError, "isFatalError");
       exports.isFatalError = isFatalError;
@@ -36570,9 +36576,9 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
         }
         _pushToQueue(directory, base) {
           const queueItem = { directory, base };
-          this._queue.push(queueItem, (error) => {
-            if (error !== null) {
-              this._handleError(error);
+          this._queue.push(queueItem, (error2) => {
+            if (error2 !== null) {
+              this._handleError(error2);
             }
           });
         }
@@ -36580,9 +36586,9 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           this._scandir(
             item.directory,
             this._settings.fsScandirSettings,
-            (error, entries) => {
-              if (error !== null) {
-                done(error, void 0);
+            (error2, entries) => {
+              if (error2 !== null) {
+                done(error2, void 0);
                 return;
               }
               for (const entry of entries) {
@@ -36592,16 +36598,16 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
             },
           );
         }
-        _handleError(error) {
+        _handleError(error2) {
           if (
             this._isDestroyed ||
-            !common.isFatalError(this._settings, error)
+            !common.isFatalError(this._settings, error2)
           ) {
             return;
           }
           this._isFatalError = true;
           this._isDestroyed = true;
-          this._emitter.emit("error", error);
+          this._emitter.emit("error", error2);
         }
         _handleEntry(entry, base) {
           if (this._isDestroyed || this._isFatalError) {
@@ -36652,8 +36658,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           this._storage = [];
         }
         read(callback) {
-          this._reader.onError((error) => {
-            callFailureCallback(callback, error);
+          this._reader.onError((error2) => {
+            callFailureCallback(callback, error2);
           });
           this._reader.onEntry((entry) => {
             this._storage.push(entry);
@@ -36665,8 +36671,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
         }
       };
       exports.default = AsyncProvider;
-      function callFailureCallback(callback, error) {
-        callback(error);
+      function callFailureCallback(callback, error2) {
+        callback(error2);
       }
       __name(callFailureCallback, "callFailureCallback");
       function callSuccessCallback(callback, entries) {
@@ -36704,8 +36710,8 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           });
         }
         read() {
-          this._reader.onError((error) => {
-            this._stream.emit("error", error);
+          this._reader.onError((error2) => {
+            this._stream.emit("error", error2);
           });
           this._reader.onEntry((entry) => {
             this._stream.push(entry);
@@ -36763,15 +36769,15 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
             for (const entry of entries) {
               this._handleEntry(entry, base);
             }
-          } catch (error) {
-            this._handleError(error);
+          } catch (error2) {
+            this._handleError(error2);
           }
         }
-        _handleError(error) {
-          if (!common.isFatalError(this._settings, error)) {
+        _handleError(error2) {
+          if (!common.isFatalError(this._settings, error2)) {
             return;
           }
-          throw error;
+          throw error2;
         }
         _handleEntry(entry, base) {
           const fullpath = entry.path;
@@ -36960,9 +36966,9 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           }
           return entry;
         }
-        _isFatalError(error) {
+        _isFatalError(error2) {
           return (
-            !utils.errno.isEnoentCodeError(error) &&
+            !utils.errno.isEnoentCodeError(error2) &&
             !this._settings.suppressErrors
           );
         }
@@ -37018,17 +37024,17 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
         _getEntry(filepath, pattern, options) {
           return this._getStat(filepath)
             .then((stats) => this._makeEntry(stats, pattern))
-            .catch((error) => {
-              if (options.errorFilter(error)) {
+            .catch((error2) => {
+              if (options.errorFilter(error2)) {
                 return null;
               }
-              throw error;
+              throw error2;
             });
         }
         _getStat(filepath) {
           return new Promise((resolve, reject) => {
-            this._stat(filepath, this._fsStatSettings, (error, stats) => {
-              return error === null ? resolve(stats) : reject(error);
+            this._stat(filepath, this._fsStatSettings, (error2, stats) => {
+              return error2 === null ? resolve(stats) : reject(error2);
             });
           });
         }
@@ -37058,11 +37064,11 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
         }
         dynamic(root2, options) {
           return new Promise((resolve, reject) => {
-            this._walkAsync(root2, options, (error, entries) => {
-              if (error === null) {
+            this._walkAsync(root2, options, (error2, entries) => {
+              if (error2 === null) {
                 resolve(entries);
               } else {
-                reject(error);
+                reject(error2);
               }
             });
           });
@@ -37163,7 +37169,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           const parts = filepath.split("/");
           const levels = parts.length;
           const patterns = this._storage.filter(
-            (info2) => !info2.complete || info2.segments.length > levels,
+            (info3) => !info3.complete || info3.segments.length > levels,
           );
           for (const pattern of patterns) {
             const section = pattern.sections[0];
@@ -37374,11 +37380,11 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           this._settings = _settings;
         }
         getFilter() {
-          return (error) => this._isNonFatalError(error);
+          return (error2) => this._isNonFatalError(error2);
         }
-        _isNonFatalError(error) {
+        _isNonFatalError(error2) {
           return (
-            utils.errno.isEnoentCodeError(error) ||
+            utils.errno.isEnoentCodeError(error2) ||
             this._settings.suppressErrors
           );
         }
@@ -37558,7 +37564,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
             read: /* @__PURE__ */ __name(() => {}, "read"),
           });
           source
-            .once("error", (error) => destination.emit("error", error))
+            .once("error", (error2) => destination.emit("error", error2))
             .on("data", (entry) =>
               destination.emit("data", options.transform(entry)),
             )
@@ -37615,11 +37621,11 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
           try {
             const stats = this._getStat(filepath);
             return this._makeEntry(stats, pattern);
-          } catch (error) {
-            if (options.errorFilter(error)) {
+          } catch (error2) {
+            if (options.errorFilter(error2)) {
               return null;
             }
-            throw error;
+            throw error2;
           }
         }
         _getStat(filepath) {
@@ -41943,12 +41949,12 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
               if (!msg) msg = "Unexpected end of input";
             }
           }
-          var error = SyntaxError(
+          var error2 = SyntaxError(
             formatError(input, msg, position2, lineno, column, json5),
           );
-          error.row = lineno + 1;
-          error.column = column + 1;
-          throw error;
+          error2.row = lineno + 1;
+          error2.column = column + 1;
+          throw error2;
         }
         __name(fail, "fail");
         function newline(chr) {
@@ -43029,7 +43035,7 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       }
       __name(Document, "Document");
       function check_if_can_be_placed(key, object, is_unset) {
-        function error(add) {
+        function error2(add) {
           return Error(
             "You can't " +
               (is_unset ? "unset" : "set") +
@@ -43039,22 +43045,22 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
               add,
           );
         }
-        __name(error, "error");
+        __name(error2, "error");
         if (!isObject(object)) {
-          throw error(" of an non-object");
+          throw error2(" of an non-object");
         }
         if (Array.isArray(object)) {
           if (String(key).match(/^\d+$/)) {
             key = Number(String(key));
             if (object.length < key || (is_unset && object.length === key)) {
-              throw error(", out of bounds");
+              throw error2(", out of bounds");
             } else if (is_unset && object.length !== key + 1) {
-              throw error(" in the middle of an array");
+              throw error2(" in the middle of an array");
             } else {
               return true;
             }
           } else {
-            throw error(" of an array");
+            throw error2(" of an array");
           }
         } else {
           return true;
@@ -48335,7 +48341,7 @@ ${directories.join("\n")}`);
             }
             return cb();
           },
-          (error) => cb(error),
+          (error2) => cb(error2),
         );
       }
       __name(handleFilter, "handleFilter");
@@ -51533,7 +51539,7 @@ ${directories.join("\n")}`);
             if (include) return onInclude(destStat, src, dest, opts, cb);
             return cb();
           },
-          (error) => cb(error),
+          (error2) => cb(error2),
         );
       }
       __name(handleFilter, "handleFilter");
@@ -52780,11 +52786,11 @@ ${directories.join("\n")}`);
         try {
           const stats = await promisify(fs6[fsStatType])(filePath);
           return stats[statsMethodName]();
-        } catch (error) {
-          if (error.code === "ENOENT") {
+        } catch (error2) {
+          if (error2.code === "ENOENT") {
             return false;
           }
-          throw error;
+          throw error2;
         }
       }
       __name(isType, "isType");
@@ -52794,11 +52800,11 @@ ${directories.join("\n")}`);
         }
         try {
           return fs6[fsStatType](filePath)[statsMethodName]();
-        } catch (error) {
-          if (error.code === "ENOENT") {
+        } catch (error2) {
+          if (error2.code === "ENOENT") {
             return false;
           }
-          throw error;
+          throw error2;
         }
       }
       __name(isTypeSync, "isTypeSync");
@@ -53762,9 +53768,9 @@ ${directories.join("\n")}`);
                   }
                 });
               } else if (options.errorFirst) {
-                args.push((error, result) => {
-                  if (error) {
-                    reject(error);
+                args.push((error2, result) => {
+                  if (error2) {
+                    reject(error2);
                   } else {
                     resolve(result);
                   }
@@ -57854,11 +57860,11 @@ ${directories.join("\n")}`);
             await Promise.all(
               items.map((element) => checkLimit(finder, element)),
             );
-          } catch (error) {
-            if (error instanceof EndError) {
-              return error.value;
+          } catch (error2) {
+            if (error2 instanceof EndError) {
+              return error2.value;
             }
-            throw error;
+            throw error2;
           }
         },
         "pLocate",
@@ -59852,10 +59858,10 @@ ${directories.join("\n")}`);
           cb = opt;
           opt = {};
         }
-        var info2 = getPathInfo(cmd, opt);
-        var pathEnv = info2.env;
-        var pathExt = info2.ext;
-        var pathExtExe = info2.extExe;
+        var info3 = getPathInfo(cmd, opt);
+        var pathEnv = info3.env;
+        var pathExt = info3.ext;
+        var pathExtExe = info3.extExe;
         var found = [];
         /* @__PURE__ */ __name(function F(i, l) {
           if (i === l) {
@@ -59885,10 +59891,10 @@ ${directories.join("\n")}`);
       __name(which, "which");
       function whichSync(cmd, opt) {
         opt = opt || {};
-        var info2 = getPathInfo(cmd, opt);
-        var pathEnv = info2.env;
-        var pathExt = info2.ext;
-        var pathExtExe = info2.extExe;
+        var info3 = getPathInfo(cmd, opt);
+        var pathEnv = info3.env;
+        var pathExt = info3.ext;
+        var pathExtExe = info3.extExe;
         var found = [];
         for (var i = 0, l = pathEnv.length; i < l; i++) {
           var pathPart = pathEnv[i];
@@ -61719,9 +61725,9 @@ ${directories.join("\n")}`);
                     resolvingCount--;
                     next();
                   },
-                  (error) => {
+                  (error2) => {
                     isRejected = true;
-                    reject(error);
+                    reject(error2);
                   },
                 );
             }, "next");
@@ -61790,13 +61796,13 @@ ${directories.join("\n")}`);
           }
           try {
             fromDirectory = fs6.realpathSync(fromDirectory);
-          } catch (error) {
-            if (error.code === "ENOENT") {
+          } catch (error2) {
+            if (error2.code === "ENOENT") {
               fromDirectory = path4.resolve(fromDirectory);
             } else if (silent) {
               return;
             } else {
-              throw error;
+              throw error2;
             }
           }
           const fromFile = path4.join(fromDirectory, "noop.js");
@@ -61812,7 +61818,7 @@ ${directories.join("\n")}`);
           if (silent) {
             try {
               return resolveFileName();
-            } catch (error) {
+            } catch (error2) {
               return;
             }
           }
@@ -62054,8 +62060,8 @@ ${directories.join("\n")}`);
                   } else {
                     return returned;
                   }
-                } catch (error) {
-                  e2 = error;
+                } catch (error2) {
+                  e2 = error2;
                   {
                     this.trigger("error", e2);
                   }
@@ -62065,8 +62071,8 @@ ${directories.join("\n")}`);
               return (await Promise.all(promises)).find(function (x) {
                 return x != null;
               });
-            } catch (error) {
-              e = error;
+            } catch (error2) {
+              e = error2;
               {
                 this.trigger("error", e);
               }
@@ -62208,13 +62214,13 @@ ${directories.join("\n")}`);
             return Math.random().toString(36).slice(2);
           }
           doDrop({
-            error,
+            error: error2,
             message = "This job has been dropped by Bottleneck",
           } = {}) {
             if (this._states.remove(this.options.id)) {
               if (this.rejectOnDrop) {
                 this._reject(
-                  error != null ? error : new BottleneckError$1(message),
+                  error2 != null ? error2 : new BottleneckError$1(message),
                 );
               }
               this.Events.trigger("dropped", {
@@ -62269,7 +62275,7 @@ ${directories.join("\n")}`);
             });
           }
           async doExecute(chained, clearGlobalState, run, free) {
-            var error, eventInfo, passed;
+            var error2, eventInfo, passed;
             if (this.retryCount === 0) {
               this._assertStatus("RUNNING");
               this._states.next(this.options.id);
@@ -62293,9 +62299,9 @@ ${directories.join("\n")}`);
                 return this._resolve(passed);
               }
             } catch (error1) {
-              error = error1;
+              error2 = error1;
               return this._onFailure(
-                error,
+                error2,
                 eventInfo,
                 clearGlobalState,
                 run,
@@ -62304,7 +62310,7 @@ ${directories.join("\n")}`);
             }
           }
           doExpire(clearGlobalState, run, free) {
-            var error, eventInfo;
+            var error2, eventInfo;
             if (this._states.jobStatus(this.options.id === "RUNNING")) {
               this._states.next(this.options.id);
             }
@@ -62314,21 +62320,21 @@ ${directories.join("\n")}`);
               options: this.options,
               retryCount: this.retryCount,
             };
-            error = new BottleneckError$1(
+            error2 = new BottleneckError$1(
               `This job timed out after ${this.options.expiration} ms.`,
             );
             return this._onFailure(
-              error,
+              error2,
               eventInfo,
               clearGlobalState,
               run,
               free,
             );
           }
-          async _onFailure(error, eventInfo, clearGlobalState, run, free) {
+          async _onFailure(error2, eventInfo, clearGlobalState, run, free) {
             var retry, retryAfter;
             if (clearGlobalState()) {
-              retry = await this.Events.trigger("failed", error, eventInfo);
+              retry = await this.Events.trigger("failed", error2, eventInfo);
               if (retry != null) {
                 retryAfter = ~~retry;
                 this.Events.trigger(
@@ -62342,7 +62348,7 @@ ${directories.join("\n")}`);
                 this.doDone(eventInfo);
                 await free(this.options, eventInfo);
                 this._assertStatus("DONE");
-                return this._reject(error);
+                return this._reject(error2);
               }
             }
           }
@@ -62669,7 +62675,7 @@ ${directories.join("\n")}`);
             return this._queue.length === 0;
           }
           async _tryToRun() {
-            var args, cb, error, reject, resolve, returned, task;
+            var args, cb, error2, reject, resolve, returned, task;
             if (this._running < 1 && this._queue.length > 0) {
               this._running++;
               ({ task, args, resolve, reject } = this._queue.shift());
@@ -62680,9 +62686,9 @@ ${directories.join("\n")}`);
                     return resolve(returned);
                   };
                 } catch (error1) {
-                  error = error1;
+                  error2 = error1;
                   return function () {
-                    return reject(error);
+                    return reject(error2);
                   };
                 }
               })();
@@ -62865,8 +62871,8 @@ ${directories.join("\n")}`);
                       } else {
                         results.push(void 0);
                       }
-                    } catch (error) {
-                      e = error;
+                    } catch (error2) {
+                      e = error2;
                       results.push(v.Events.trigger("error", e));
                     }
                   }
@@ -63306,19 +63312,19 @@ ${directories.join("\n")}`);
               return done;
             }
             async _addToQueue(job) {
-              var args, blocked, error, options, reachedHWM, shifted, strategy;
+              var args, blocked, error2, options, reachedHWM, shifted, strategy;
               ({ args, options } = job);
               try {
                 ({ reachedHWM, blocked, strategy } =
                   await this._store.__submit__(this.queued(), options.weight));
               } catch (error1) {
-                error = error1;
+                error2 = error1;
                 this.Events.trigger("debug", `Could not queue ${options.id}`, {
                   args,
                   options,
-                  error,
+                  error: error2,
                 });
-                job.doDrop({ error });
+                job.doDrop({ error: error2 });
                 return false;
               }
               if (blocked) {
@@ -63531,7 +63537,7 @@ ${directories.join("\n")}`);
   });
 
   // src/index.ts
-  var import_core2 = __toESM(require_core());
+  var core3 = __toESM(require_core());
   var import_fs_extra4 = __toESM(require_lib2());
 
   // src/gitUtils.ts
@@ -63598,9 +63604,9 @@ ${directories.join("\n")}`);
   var semver = __toESM(require_semver2());
 
   // node_modules/.pnpm/bail@2.0.2/node_modules/bail/index.js
-  function bail(error) {
-    if (error) {
-      throw error;
+  function bail(error2) {
+    if (error2) {
+      throw error2;
     }
   }
   __name(bail, "bail");
@@ -63642,11 +63648,11 @@ ${directories.join("\n")}`);
         );
       }
       next(null, ...values);
-      function next(error, ...output) {
+      function next(error2, ...output) {
         const fn = fns[++middlewareIndex];
         let index2 = -1;
-        if (error) {
-          callback(error);
+        if (error2) {
+          callback(error2);
           return;
         }
         while (++index2 < values.length) {
@@ -63687,10 +63693,10 @@ ${directories.join("\n")}`);
       }
       try {
         result = middleware.apply(this, parameters);
-      } catch (error) {
+      } catch (error2) {
         const exception =
           /** @type {Error} */
-          error;
+          error2;
         if (fnExpectsCallback && called) {
           throw exception;
         }
@@ -63707,10 +63713,10 @@ ${directories.join("\n")}`);
       }
     }
     __name(wrapped, "wrapped");
-    function done(error, ...output) {
+    function done(error2, ...output) {
       if (!called) {
         called = true;
-        callback(error, ...output);
+        callback(error2, ...output);
       }
     }
     __name(done, "done");
@@ -64677,9 +64683,9 @@ ${directories.join("\n")}`);
           /** @type {HeadTree extends undefined ? Node : HeadTree} */
           /** @type {unknown} */
           self2.parse(realFile);
-        self2.run(parseTree, realFile, function (error, tree, file2) {
-          if (error || !tree || !file2) {
-            return realDone(error);
+        self2.run(parseTree, realFile, function (error2, tree, file2) {
+          if (error2 || !tree || !file2) {
+            return realDone(error2);
           }
           const compileTree =
             /** @type {CompileTree extends undefined ? Node : CompileTree} */
@@ -64692,14 +64698,14 @@ ${directories.join("\n")}`);
             file2.result = compileResult;
           }
           realDone(
-            error,
+            error2,
             /** @type {VFileWithOutput<CompileResult>} */
             file2,
           );
         });
-        function realDone(error, file2) {
-          if (error || !file2) {
-            reject(error);
+        function realDone(error2, file2) {
+          if (error2 || !file2) {
+            reject(error2);
           } else if (resolve) {
             resolve(file2);
           } else {
@@ -64752,9 +64758,9 @@ ${directories.join("\n")}`);
       assertDone("processSync", "process", complete);
       ok(result, "we either bailed on an error or have a tree");
       return result;
-      function realDone(error, file2) {
+      function realDone(error2, file2) {
         complete = true;
-        bail(error);
+        bail(error2);
         result = file2;
       }
       __name(realDone, "realDone");
@@ -64813,12 +64819,12 @@ ${directories.join("\n")}`);
         );
         const realFile = vfile(file);
         transformers.run(tree, realFile, realDone);
-        function realDone(error, outputTree, file2) {
+        function realDone(error2, outputTree, file2) {
           const resultingTree =
             /** @type {TailTree extends undefined ? Node : TailTree} */
             outputTree || tree;
-          if (error) {
-            reject(error);
+          if (error2) {
+            reject(error2);
           } else if (resolve) {
             resolve(resultingTree);
           } else {
@@ -64854,8 +64860,8 @@ ${directories.join("\n")}`);
       assertDone("runSync", "run", complete);
       ok(result, "we either bailed on an error or have a tree");
       return result;
-      function realDone(error, tree2) {
-        bail(error);
+      function realDone(error2, tree2) {
+        bail(error2);
         result = tree2;
         complete = true;
       }
@@ -68335,10 +68341,10 @@ ${directories.join("\n")}`);
       effects.enter("chunkString", {
         contentType: "string",
       });
-      return info2(code2);
+      return info3(code2);
     }
     __name(infoBefore, "infoBefore");
-    function info2(code2) {
+    function info3(code2) {
       if (code2 === null || markdownLineEnding(code2)) {
         effects.exit("chunkString");
         effects.exit("codeFencedFenceInfo");
@@ -68353,9 +68359,9 @@ ${directories.join("\n")}`);
         return nok(code2);
       }
       effects.consume(code2);
-      return info2;
+      return info3;
     }
-    __name(info2, "info");
+    __name(info3, "info");
     function metaBefore(code2) {
       if (code2 === null || markdownLineEnding(code2)) {
         return infoBefore(code2);
@@ -71778,12 +71784,12 @@ ${directories.join("\n")}`);
       return token;
     }
     __name(exit2, "exit");
-    function onsuccessfulconstruct(construct, info2) {
-      addResult(construct, info2.from);
+    function onsuccessfulconstruct(construct, info3) {
+      addResult(construct, info3.from);
     }
     __name(onsuccessfulconstruct, "onsuccessfulconstruct");
-    function onsuccessfulcheck(_, info2) {
-      info2.restore();
+    function onsuccessfulcheck(_, info3) {
+      info3.restore();
     }
     __name(onsuccessfulcheck, "onsuccessfulcheck");
     function constructFactory(onreturn, fields) {
@@ -71792,7 +71798,7 @@ ${directories.join("\n")}`);
         let listOfConstructs;
         let constructIndex;
         let currentConstruct;
-        let info2;
+        let info3;
         return Array.isArray(constructs2)
           ? handleListOfConstructs(constructs2)
           : "tokenize" in constructs2
@@ -71827,7 +71833,7 @@ ${directories.join("\n")}`);
         function handleConstruct(construct) {
           return start;
           function start(code2) {
-            info2 = store();
+            info3 = store();
             currentConstruct = construct;
             if (!construct.partial) {
               context2.currentConstruct = construct;
@@ -71855,13 +71861,13 @@ ${directories.join("\n")}`);
         __name(handleConstruct, "handleConstruct");
         function ok3(code2) {
           consumed = true;
-          onreturn(currentConstruct, info2);
+          onreturn(currentConstruct, info3);
           return returnState;
         }
         __name(ok3, "ok");
         function nok(code2) {
           consumed = true;
-          info2.restore();
+          info3.restore();
           if (++constructIndex < listOfConstructs.length) {
             return handleConstruct(listOfConstructs[constructIndex]);
           }
@@ -73173,9 +73179,9 @@ ${directories.join("\n")}`);
   __name(map, "map");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/blockquote.js
-  function blockquote(node2, _, state, info2) {
+  function blockquote(node2, _, state, info3) {
     const exit2 = state.enter("blockquote");
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     tracker.move("> ");
     tracker.shift(2);
     const value = state.indentLines(
@@ -73217,14 +73223,14 @@ ${directories.join("\n")}`);
   __name(listInScope, "listInScope");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/break.js
-  function hardBreak(_, _1, state, info2) {
+  function hardBreak(_, _1, state, info3) {
     let index2 = -1;
     while (++index2 < state.unsafe.length) {
       if (
         state.unsafe[index2].character === "\n" &&
         patternInScope(state.stack, state.unsafe[index2])
       ) {
-        return /[ \t]/.test(info2.before) ? "" : " ";
+        return /[ \t]/.test(info3.before) ? "" : " ";
       }
     }
     return "\\\n";
@@ -73283,7 +73289,7 @@ ${directories.join("\n")}`);
   __name(checkFence, "checkFence");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/code.js
-  function code(node2, _, state, info2) {
+  function code(node2, _, state, info3) {
     const marker = checkFence(state);
     const raw = node2.value || "";
     const suffix = marker === "`" ? "GraveAccent" : "Tilde";
@@ -73293,7 +73299,7 @@ ${directories.join("\n")}`);
       exit3();
       return value2;
     }
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     const sequence = marker.repeat(Math.max(longestStreak(raw, marker) + 1, 3));
     const exit2 = state.enter("codeFenced");
     let value = tracker.move(sequence);
@@ -73351,12 +73357,12 @@ ${directories.join("\n")}`);
   __name(checkQuote, "checkQuote");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/definition.js
-  function definition2(node2, _, state, info2) {
+  function definition2(node2, _, state, info3) {
     const quote = checkQuote(state);
     const suffix = quote === '"' ? "Quote" : "Apostrophe";
     const exit2 = state.enter("definition");
     let subexit = state.enter("label");
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     let value = tracker.move("[");
     value += tracker.move(
       state.safe(state.associationId(node2), {
@@ -73427,10 +73433,10 @@ ${directories.join("\n")}`);
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/emphasis.js
   emphasis.peek = emphasisPeek;
-  function emphasis(node2, _, state, info2) {
+  function emphasis(node2, _, state, info3) {
     const marker = checkEmphasis(state);
     const exit2 = state.enter("emphasis");
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     let value = tracker.move(marker);
     value += tracker.move(
       state.containerPhrasing(node2, {
@@ -73688,9 +73694,9 @@ ${directories.join("\n")}`);
   __name(formatHeadingAsSetext, "formatHeadingAsSetext");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/heading.js
-  function heading(node2, _, state, info2) {
+  function heading(node2, _, state, info3) {
     const rank = Math.max(Math.min(6, node2.depth || 1), 1);
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     if (formatHeadingAsSetext(node2, state)) {
       const exit3 = state.enter("headingSetext");
       const subexit2 = state.enter("phrasing");
@@ -73751,12 +73757,12 @@ ${directories.join("\n")}`);
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/image.js
   image.peek = imagePeek;
-  function image(node2, _, state, info2) {
+  function image(node2, _, state, info3) {
     const quote = checkQuote(state);
     const suffix = quote === '"' ? "Quote" : "Apostrophe";
     const exit2 = state.enter("image");
     let subexit = state.enter("label");
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     let value = tracker.move("![");
     value += tracker.move(
       state.safe(node2.alt, {
@@ -73818,11 +73824,11 @@ ${directories.join("\n")}`);
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/image-reference.js
   imageReference.peek = imageReferencePeek;
-  function imageReference(node2, _, state, info2) {
+  function imageReference(node2, _, state, info3) {
     const type = node2.referenceType;
     const exit2 = state.enter("imageReference");
     let subexit = state.enter("label");
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     let value = tracker.move("![");
     const alt = state.safe(node2.alt, {
       before: value,
@@ -73917,10 +73923,10 @@ ${directories.join("\n")}`);
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/link.js
   link.peek = linkPeek;
-  function link(node2, _, state, info2) {
+  function link(node2, _, state, info3) {
     const quote = checkQuote(state);
     const suffix = quote === '"' ? "Quote" : "Apostrophe";
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     let exit2;
     let subexit;
     if (formatLinkAsAutolink(node2, state)) {
@@ -74003,11 +74009,11 @@ ${directories.join("\n")}`);
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/link-reference.js
   linkReference.peek = linkReferencePeek;
-  function linkReference(node2, _, state, info2) {
+  function linkReference(node2, _, state, info3) {
     const type = node2.referenceType;
     const exit2 = state.enter("linkReference");
     let subexit = state.enter("label");
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     let value = tracker.move("[");
     const text4 = state.containerPhrasing(node2, {
       before: value,
@@ -74112,7 +74118,7 @@ ${directories.join("\n")}`);
   __name(checkRule, "checkRule");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/list.js
-  function list3(node2, parent, state, info2) {
+  function list3(node2, parent, state, info3) {
     const exit2 = state.enter("list");
     const bulletCurrent = state.bulletCurrent;
     let bullet = node2.ordered ? checkBulletOrdered(state) : checkBullet(state);
@@ -74161,7 +74167,7 @@ ${directories.join("\n")}`);
       bullet = bulletOther;
     }
     state.bulletCurrent = bullet;
-    const value = state.containerFlow(node2, info2);
+    const value = state.containerFlow(node2, info3);
     state.bulletLastUsed = bullet;
     state.bulletCurrent = bulletCurrent;
     exit2();
@@ -74184,7 +74190,7 @@ ${directories.join("\n")}`);
   __name(checkListItemIndent, "checkListItemIndent");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/list-item.js
-  function listItem(node2, parent, state, info2) {
+  function listItem(node2, parent, state, info3) {
     const listItemIndent = checkListItemIndent(state);
     let bullet = state.bulletCurrent || checkBullet(state);
     if (parent && parent.type === "list" && parent.ordered) {
@@ -74205,7 +74211,7 @@ ${directories.join("\n")}`);
     ) {
       size = Math.ceil(size / 4) * 4;
     }
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     tracker.move(bullet + " ".repeat(size - bullet.length));
     tracker.shift(size);
     const exit2 = state.enter("listItem");
@@ -74228,10 +74234,10 @@ ${directories.join("\n")}`);
   __name(listItem, "listItem");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/paragraph.js
-  function paragraph(node2, _, state, info2) {
+  function paragraph(node2, _, state, info3) {
     const exit2 = state.enter("paragraph");
     const subexit = state.enter("phrasing");
-    const value = state.containerPhrasing(node2, info2);
+    const value = state.containerPhrasing(node2, info3);
     subexit();
     exit2();
     return value;
@@ -74266,12 +74272,12 @@ ${directories.join("\n")}`);
     ]);
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/root.js
-  function root(node2, _, state, info2) {
+  function root(node2, _, state, info3) {
     const hasPhrasing = node2.children.some(function (d) {
       return phrasing(d);
     });
     const fn = hasPhrasing ? state.containerPhrasing : state.containerFlow;
-    return fn.call(state, node2, info2);
+    return fn.call(state, node2, info3);
   }
   __name(root, "root");
 
@@ -74291,10 +74297,10 @@ ${directories.join("\n")}`);
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/strong.js
   strong.peek = strongPeek;
-  function strong(node2, _, state, info2) {
+  function strong(node2, _, state, info3) {
     const marker = checkStrong(state);
     const exit2 = state.enter("strong");
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     let value = tracker.move(marker + marker);
     value += tracker.move(
       state.containerPhrasing(node2, {
@@ -74314,8 +74320,8 @@ ${directories.join("\n")}`);
   __name(strongPeek, "strongPeek");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/handle/text.js
-  function text3(node2, _, state, info2) {
-    return state.safe(node2.value, info2);
+  function text3(node2, _, state, info3) {
+    return state.safe(node2.value, info3);
   }
   __name(text3, "text");
 
@@ -74569,14 +74575,14 @@ ${directories.join("\n")}`);
   __name(compilePattern, "compilePattern");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/util/container-phrasing.js
-  function containerPhrasing(parent, state, info2) {
+  function containerPhrasing(parent, state, info3) {
     const indexStack = state.indexStack;
     const children = parent.children || [];
     const results = [];
     let index2 = -1;
-    let before = info2.before;
+    let before = info3.before;
     indexStack.push(-1);
-    let tracker = state.createTracker(info2);
+    let tracker = state.createTracker(info3);
     while (++index2 < children.length) {
       const child = children[index2];
       let after;
@@ -74592,7 +74598,7 @@ ${directories.join("\n")}`);
             }).charAt(0)
           : "";
       } else {
-        after = info2.after;
+        after = info3.after;
       }
       if (
         results.length > 0 &&
@@ -74604,7 +74610,7 @@ ${directories.join("\n")}`);
           " ",
         );
         before = " ";
-        tracker = state.createTracker(info2);
+        tracker = state.createTracker(info3);
         tracker.move(results.join(""));
       }
       results.push(
@@ -74624,10 +74630,10 @@ ${directories.join("\n")}`);
   __name(containerPhrasing, "containerPhrasing");
 
   // node_modules/.pnpm/mdast-util-to-markdown@2.1.0/node_modules/mdast-util-to-markdown/lib/util/container-flow.js
-  function containerFlow(parent, state, info2) {
+  function containerFlow(parent, state, info3) {
     const indexStack = state.indexStack;
     const children = parent.children || [];
-    const tracker = state.createTracker(info2);
+    const tracker = state.createTracker(info3);
     const results = [];
     let index2 = -1;
     indexStack.push(-1);
@@ -74900,12 +74906,12 @@ ${directories.join("\n")}`);
     }
   }
   __name(joinDefinition, "joinDefinition");
-  function containerPhrasingBound(parent, info2) {
-    return containerPhrasing(parent, this, info2);
+  function containerPhrasingBound(parent, info3) {
+    return containerPhrasing(parent, this, info3);
   }
   __name(containerPhrasingBound, "containerPhrasingBound");
-  function containerFlowBound(parent, info2) {
-    return containerFlow(parent, this, info2);
+  function containerFlowBound(parent, info3) {
+    return containerFlow(parent, this, info3);
   }
   __name(containerFlowBound, "containerFlowBound");
   function safeBound(value, config) {
@@ -75378,13 +75384,13 @@ ${directories.join("\n")}`);
       const res = await req;
       if (
         res.data.errors != null &&
-        res.data.errors.some((error) => error.type === "RATE_LIMITED")
+        res.data.errors.some((error2) => error2.type === "RATE_LIMITED")
       ) {
-        const error = Object.assign(new Error("GraphQL Rate Limit Exceeded"), {
+        const error2 = Object.assign(new Error("GraphQL Rate Limit Exceeded"), {
           response: res,
           data: res.data,
         });
-        throw error;
+        throw error2;
       }
     }
     return req;
@@ -75499,21 +75505,21 @@ ${directories.join("\n")}`);
     events.on("error", (e) =>
       octokit.log.warn("Error in throttling-plugin limit handler", e),
     );
-    state.retryLimiter.on("failed", async function (error, info2) {
-      const [state2, request, options] = info2.args;
+    state.retryLimiter.on("failed", async function (error2, info3) {
+      const [state2, request, options] = info3.args;
       const { pathname } = new URL(options.url, "http://github.test");
       const shouldRetryGraphQL =
-        pathname.startsWith("/graphql") && error.status !== 401;
-      if (!(shouldRetryGraphQL || error.status === 403)) {
+        pathname.startsWith("/graphql") && error2.status !== 401;
+      if (!(shouldRetryGraphQL || error2.status === 403)) {
         return;
       }
       const retryCount = ~~request.retryCount;
       request.retryCount = retryCount;
       options.request.retryCount = retryCount;
       const { wantRetry, retryAfter = 0 } = await (async function () {
-        if (/\bsecondary rate\b/i.test(error.message)) {
+        if (/\bsecondary rate\b/i.test(error2.message)) {
           const retryAfter2 =
-            Number(error.response.headers["retry-after"]) ||
+            Number(error2.response.headers["retry-after"]) ||
             state2.fallbackSecondaryRateRetryAfter;
           const wantRetry2 = await emitter.trigger(
             "secondary-limit",
@@ -75525,14 +75531,14 @@ ${directories.join("\n")}`);
           return { wantRetry: wantRetry2, retryAfter: retryAfter2 };
         }
         if (
-          (error.response.headers != null &&
-            error.response.headers["x-ratelimit-remaining"] === "0") ||
-          (error.response.data?.errors ?? []).some(
-            (error2) => error2.type === "RATE_LIMITED",
+          (error2.response.headers != null &&
+            error2.response.headers["x-ratelimit-remaining"] === "0") ||
+          (error2.response.data?.errors ?? []).some(
+            (error22) => error22.type === "RATE_LIMITED",
           )
         ) {
           const rateLimitReset = new Date(
-            ~~error.response.headers["x-ratelimit-reset"] * 1e3,
+            ~~error2.response.headers["x-ratelimit-reset"] * 1e3,
           ).getTime();
           const retryAfter2 = Math.max(
             // Add one second so we retry _after_ the reset time
@@ -75758,9 +75764,9 @@ ${directories.join("\n")}`);
       messagePrestate,
       messageReleasesHeading,
       ...changedPackagesInfo.map(
-        (info2) => `${info2.header}
+        (info3) => `${info3.header}
 
-${info2.content}`,
+${info3.content}`,
       ),
     ].join("\n");
     if (fullMessage.length > prBodyMaxCharacters) {
@@ -75772,7 +75778,7 @@ ${info2.content}`,
 > The changelog information of each package has been omitted from this message, as the content exceeds the size limit.
 `,
         ...changedPackagesInfo.map(
-          (info2) => `${info2.header}
+          (info3) => `${info3.header}
 
 `,
         ),
@@ -75967,30 +75973,26 @@ ${info2.content}`,
 
   // src/index.ts
   var getOptionalInput = /* @__PURE__ */ __name(
-    (name) => import_core2.default.getInput(name) || void 0,
+    (name) => core3.getInput(name) || void 0,
     "getOptionalInput",
   );
   void (async () => {
     let githubToken = process.env.GITHUB_TOKEN;
     if (!githubToken) {
-      import_core2.default.setFailed(
-        "Please add the GITHUB_TOKEN to the changesets action",
-      );
+      core3.setFailed("Please add the GITHUB_TOKEN to the changesets action");
       return;
     }
-    const inputCwd = import_core2.default.getInput("cwd");
+    const inputCwd = core3.getInput("cwd");
     if (inputCwd) {
-      import_core2.default.info(
-        "changing directory to the one given as the input",
-      );
+      core3.info("changing directory to the one given as the input");
       process.chdir(inputCwd);
     }
-    const setupGitUser = import_core2.default.getBooleanInput("setupGitUser");
+    const setupGitUser = core3.getBooleanInput("setupGitUser");
     if (setupGitUser) {
-      import_core2.default.info("setting git user");
+      core3.info("setting git user");
       await setupUser();
     }
-    import_core2.default.info("setting GitHub credentials");
+    core3.info("setting GitHub credentials");
     await import_fs_extra4.default.writeFile(
       `${process.env.HOME}/.netrc`,
       `machine github.com
@@ -75998,35 +76000,33 @@ login github-actions[bot]
 password ${githubToken}`,
     );
     let { changesets } = await readChangesetState();
-    let publishScript = import_core2.default.getInput("publish");
-    const registry = import_core2.default.getInput("registry");
+    let publishScript = core3.getInput("publish");
+    const registry = core3.getInput("registry");
     let hasChangesets = changesets.length !== 0;
     const hasNonEmptyChangesets = changesets.some(
       (changeset) => changeset.releases.length > 0,
     );
     let hasPublishScript = !!publishScript;
-    import_core2.default.setOutput("published", "false");
-    import_core2.default.setOutput("publishedPackages", "[]");
-    import_core2.default.setOutput("hasChangesets", String(hasChangesets));
+    core3.setOutput("published", "false");
+    core3.setOutput("publishedPackages", "[]");
+    core3.setOutput("hasChangesets", String(hasChangesets));
     switch (true) {
       case !hasChangesets && !hasPublishScript:
-        import_core2.default.info("No changesets found");
+        core3.info("No changesets found");
         return;
       case !hasChangesets && hasPublishScript: {
-        import_core2.default.info(
+        core3.info(
           "No changesets found, attempting to publish any unpublished packages to npm",
         );
         await loadNpmRc(registry);
         const result = await runPublish({
           script: publishScript,
           githubToken,
-          createGithubReleases: import_core2.default.getBooleanInput(
-            "createGithubReleases",
-          ),
+          createGithubReleases: core3.getBooleanInput("createGithubReleases"),
         });
         if (result.published) {
-          import_core2.default.setOutput("published", "true");
-          import_core2.default.setOutput(
+          core3.setOutput("published", "true");
+          core3.setOutput(
             "publishedPackages",
             JSON.stringify(result.publishedPackages),
           );
@@ -76034,7 +76034,7 @@ password ${githubToken}`,
         return;
       }
       case hasChangesets && !hasNonEmptyChangesets:
-        import_core2.default.info("All changesets are empty; not creating PR");
+        core3.info("All changesets are empty; not creating PR");
         return;
       case hasChangesets:
         const { pullRequestNumber } = await runVersion({
@@ -76045,15 +76045,12 @@ password ${githubToken}`,
           hasPublishScript,
           branch: getOptionalInput("branch"),
         });
-        import_core2.default.setOutput(
-          "pullRequestNumber",
-          String(pullRequestNumber),
-        );
+        core3.setOutput("pullRequestNumber", String(pullRequestNumber));
         return;
     }
   })().catch((err) => {
-    import_core2.default.error(err);
-    import_core2.default.setFailed(err.message);
+    core3.error(err);
+    core3.setFailed(err.message);
   });
 })();
 /*! Bundled license information:
