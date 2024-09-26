@@ -4,7 +4,7 @@
   "license": "MIT",
   "main": "dist/index.js",
   "scripts": {
-    "build": "ncc build src/index.ts -o dist --transpile-only --minify",
+    "build": "rm -rf dist && esbuild --bundle --sourcemap --platform=node --keep-names --format=iife src/index.ts --outfile=dist/index.js",
     "bump": "tsx ./scripts/bump.ts",
     "changeset": "changeset",
     "release": "tsx ./scripts/release.ts",
@@ -37,6 +37,7 @@
     "@types/semver": "^7.5.8",
     "@vercel/ncc": "^0.38.2",
     "@vitest/coverage-v8": "^2.1.1",
+    "esbuild": "^0.24.0",
     "fixturez": "^1.1.0",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
